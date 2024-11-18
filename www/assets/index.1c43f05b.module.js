@@ -1,0 +1,1 @@
+import{F as a}from"./index.10add3df.module.js";import{P as t}from"./vendor.7a61536b.module.js";function l({children:e}){return React.createElement(t,{className:"page"},React.createElement("div",null,e,React.createElement(a,null)))}export{l as default};

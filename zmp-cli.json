@@ -1,0 +1,17 @@
+{
+  "cwd": "E:\\Study\\MiniAppZalo\\BDUSupport",
+  "newProject": true,
+  "name": "BDUSupport",
+  "package": "zmp-ui",
+  "framework": "react",
+  "cssPreProcessor": false,
+  "template": "white",
+  "theming": {
+    "color": "#ad171c ",
+    "darkTheme": false,
+    "fillBars": false
+  },
+  "customBuild": false,
+  "includeTailwind": false,
+  "stateManagement": "recoil"
+}

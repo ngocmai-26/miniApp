@@ -1,0 +1,51 @@
+
+
+body {
+  font-family: Arial, sans-serif;
+  margin: 0;
+  padding: 0;
+}
+
+#title {
+  font-weight: 800;
+}
+
+#app {
+  display: flex;
+  flex-direction: column;
+  height: 100vh;
+}
+
+.app-container {
+  display: flex;
+  flex-direction: column;
+  height: 100%;
+}
+
+.main-content {
+  flex: 1;
+  overflow-y: auto;
+  padding-bottom: 60px; /* Space for footer */
+}
+
+swiper-container {
+  width: 800px;
+  max-height: 200px;
+  line-height: 200px;
+  text-align: center;
+}
+
+swiper-slide {
+  background-color: rgb(4 47 46);
+  color: #fff;
+  font-size: 25px;
+}
+
+.clamped-text {
+  display: -webkit-box;
+  -webkit-box-orient: vertical;
+  overflow: hidden;
+  text-overflow: ellipsis;
+  -webkit-line-clamp: 2; /* Số dòng bạn muốn hiển thị */
+  height: 2.5rem; /* Chiều cao của 2 dòng văn bản */
+}
