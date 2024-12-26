@@ -1,38 +1,52 @@
 import React, { useEffect, useState } from "react";
 import { Page } from "zmp-ui";
 import Footer from "../components/footer";
-import search from "../img/search-icon.png";
-import bonus from "../img/bonus.png";
-import notebook from "../img/notebook.png";
-import comment from "../img/comment.png";
-import form from "../img/form.png";
-import scholarship from "../img/hocbong.png";
 import lienhe from "../img/lienhe.png";
-import major from "../img/major.png";
+import add from "../img/add.jpg";
 import { Swiper, SwiperSlide } from "swiper/react";
 import "swiper/css";
 import { NavLink } from "react-router-dom";
 import { useDispatch, useSelector } from "react-redux";
 import { getAllNews } from "../thunks/NewsThunks";
 import moment from "moment";
+import { openWebview } from "zmp-sdk/apis";
+import { getAllConfigs } from "../thunks/ConfigThunks";
 
 const HomePage = () => {
   const dispatch = useDispatch();
   const { allNews } = useSelector((state) => state.newsReducer);
+  const { allConfig } = useSelector((state) => state.configReducer);
   const [latestNewsType2, setLatestNewsType2] = useState(null);
 
   useEffect(() => {
+    
     dispatch(getAllNews());
+    dispatch(getAllConfigs());
   }, [dispatch]);
 
+  console.log("allConfig", allConfig)
+
   useEffect(() => {
-    // Lọc và sắp xếp lại bài viết có type === 2 khi allNews thay đổi
     const latest = allNews
       .filter((item) => item.type === 2)
       .sort((a, b) => new Date(b.created_at) - new Date(a.created_at))[0];
 
-    setLatestNewsType2(latest); // Cập nhật state với bài viết mới nhất
-  }, [allNews]); // Chạy khi allNews thay đổi
+    setLatestNewsType2(latest);
+  }, [allNews]);
+
+  const openUrlInWebview = async (url) => {
+    try {
+      await openWebview({
+        url: url,
+        config: {
+          style: "bottomSheet",
+          leftButton: "back",
+        },
+      });
+    } catch (error) {
+      console.log(error);
+    }
+  };
 
   return (
     <Page className="page">
@@ -51,82 +65,40 @@ const HomePage = () => {
         </div>
 
         <div className="page mb-16">
-          {/* Grid of Options */}
           <div className="my-5 grid grid-cols-2 md:grid-cols-2 sm:grid-cols-2 xl:grid-cols-3 gap-4 px-4">
-            <div className="">
-              <NavLink to="/RegisterForAdmission" className="nav-item">
-                <div className="bg-white rounded-2xl h-32 flex flex-col items-center justify-center py-2 px-2 shadow-md">
-                  <img src={form} alt="Form" className="w-12 h-12 mt-2 mb-2" />
-                  <div className="text-center text-black text-base">
-                    Đăng ký xét tuyển
+            {allConfig?.map(
+              (item, key) =>
+                item.is_show_in_home && (
+                  <div className="" key={key}>
+                    <NavLink
+                      to={
+                        item.name === "Sổ tay sinh viên"
+                          ? "/so-tay-sinh-vien?src=https://daotao.bdu.edu.vn/so-tay-sinh-vien/index.html&homePath=/"
+                          : item.direct_to
+                      }
+                      className="nav-item"
+                    >
+                      <div className="bg-white rounded-2xl h-32 flex flex-col items-center justify-center py-2 px-2 shadow-md">
+                        <img
+                          src={item.icon_url}
+                          alt={item.name}
+                          className="w-12 h-12 mt-2 mb-2"
+                        />
+                        <div className="text-center text-black text-base">
+                          {item.name}
+                        </div>
+                      </div>
+                    </NavLink>
                   </div>
-                </div>
-              </NavLink>
-            </div>
+                )
+            )}
+
             <div className="">
-              <NavLink to="/handbook" className="nav-item">
+              <NavLink to="/them-chuc-nang" className="nav-item">
                 <div className="bg-white rounded-2xl h-32 flex flex-col items-center justify-center py-2 px-2 shadow-md">
-                  <img
-                    src={scholarship}
-                    alt="Scholarship"
-                    className="w-12 h-12 mt-2 mb-2"
-                  />
+                  <img src={add} alt="Search" className="w-10 h-10 mt-2 mb-2" />
                   <div className="text-center text-black text-base">
-                    Cẩm nang tuyển sinh
-                  </div>
-                </div>
-              </NavLink>
-            </div>
-            <div className="">
-              <NavLink to="/Major" className="nav-item">
-                <div className="bg-white rounded-2xl h-32 flex flex-col items-center justify-center py-2 px-2 shadow-md">
-                  <img src={major} alt="Search" className="w-16 h-16 mt-2 " />
-                  <div className="text-center text-black text-base">
-                    Ngành đào tạo
-                  </div>
-                </div>
-              </NavLink>
-            </div>
-        
-            <div className="">
-              <NavLink to="/notebook?src=https://daotao.bdu.edu.vn/so-tay-sinh-vien/index.html&homePath=/">
-                <div className="bg-white rounded-2xl h-32 flex flex-col items-center justify-center py-2 px-2 shadow-md">
-                  <img
-                    src={notebook}
-                    alt="Notebook"
-                    className="w-12 h-12 mt-2 mb-2"
-                  />
-                  <div className="text-center text-black text-base">
-                    Sổ tay sinh viên
-                  </div>
-                </div>
-              </NavLink>
-            </div>
-            <div className="">
-              <NavLink to="/feedback" className="nav-item">
-                <div className="bg-white rounded-2xl h-32 flex flex-col items-center justify-center py-2 px-2 shadow-md">
-                  <img
-                    src={comment}
-                    alt="Comment"
-                    className="w-12 h-12 mt-2 mb-2"
-                  />
-                  <div className="text-center text-black text-base">
-                    Đóng góp ý kiến
-                  </div>
-                </div>
-              </NavLink>
-            </div>
-        
-            <div className="">
-              <NavLink to="/ContactPage" className="nav-item">
-                <div className="bg-white rounded-2xl h-32 flex flex-col items-center justify-center py-2 px-2 shadow-md">
-                  <img
-                    src={lienhe}
-                    alt="Search"
-                    className="w-10 h-10 mt-2 mb-2"
-                  />
-                  <div className="text-center text-black text-base">
-                    Liên hệ
+                    Thêm chức năng
                   </div>
                 </div>
               </NavLink>
@@ -171,7 +143,12 @@ const HomePage = () => {
                   .map((item) => (
                     <SwiperSlide key={item.id}>
                       <div>
-                        <a href={item.link} target="_blank">
+                        <button
+                          onClick={() => {
+                            openUrlInWebview(item.link);
+                          }}
+                          className="w-full text-start"
+                        >
                           <div className="rounded-xl overflow-hidden">
                             <img
                               src={item.image}
@@ -187,7 +164,7 @@ const HomePage = () => {
                           <div className="text-right text-gray-400 text-xs">
                             Ngày: {moment(item.created_at).format("DD/MM/YYYY")}
                           </div>
-                        </a>
+                        </button>
                       </div>
                     </SwiperSlide>
                   ))}
@@ -231,7 +208,12 @@ const HomePage = () => {
                   .map((item) => (
                     <SwiperSlide key={item.id}>
                       <div>
-                        <a href={item.link} target="_blank">
+                        <button
+                          onClick={() => {
+                            openUrlInWebview(item.link);
+                          }}
+                          className="w-full text-start"
+                        >
                           <div className="rounded-xl overflow-hidden">
                             <img
                               src={item.image}
@@ -247,7 +229,7 @@ const HomePage = () => {
                           <div className="text-right text-gray-400 text-xs">
                             Ngày: {moment(item.created_at).format("DD/MM/YYYY")}
                           </div>
-                        </a>
+                        </button>
                       </div>
                     </SwiperSlide>
                   ))}
@@ -293,7 +275,12 @@ const HomePage = () => {
                   .map((item) => (
                     <SwiperSlide key={item.id}>
                       <div>
-                        <a href={item.link} target="_blank">
+                        <button
+                          onClick={() => {
+                            openUrlInWebview(item.link);
+                          }}
+                          className="w-full text-start"
+                        >
                           <div className="rounded-xl overflow-hidden">
                             <img
                               src={item.image}
@@ -309,7 +296,7 @@ const HomePage = () => {
                           <div className="text-right text-gray-400 text-xs">
                             Ngày: {moment(item.created_at).format("DD/MM/YYYY")}
                           </div>
-                        </a>
+                        </button>
                       </div>
                     </SwiperSlide>
                   ))}
@@ -352,7 +339,12 @@ const HomePage = () => {
                   .map((item) => (
                     <SwiperSlide key={item.id}>
                       <div>
-                        <a href={item.link} target="_blank">
+                        <button
+                          onClick={() => {
+                            openUrlInWebview(item.link);
+                          }}
+                          className="w-full text-start"
+                        >
                           <div className="rounded-xl overflow-hidden">
                             <img
                               src={item.image}
@@ -368,7 +360,7 @@ const HomePage = () => {
                           <div className="text-right text-gray-400 text-xs">
                             Ngày: {moment(item.created_at).format("DD/MM/YYYY")}
                           </div>
-                        </a>
+                        </button>
                       </div>
                     </SwiperSlide>
                   ))}
@@ -411,7 +403,12 @@ const HomePage = () => {
                   .map((item) => (
                     <SwiperSlide key={item.id}>
                       <div>
-                        <a href={item.link} target="_blank">
+                        <button
+                          onClick={() => {
+                            openUrlInWebview(item.link);
+                          }}
+                          className="w-full text-start"
+                        >
                           <div className="rounded-xl overflow-hidden">
                             <img
                               src={item.image}
@@ -427,7 +424,7 @@ const HomePage = () => {
                           <div className="text-right text-gray-400 text-xs">
                             Ngày: {moment(item.created_at).format("DD/MM/YYYY")}
                           </div>
-                        </a>
+                        </button>
                       </div>
                     </SwiperSlide>
                   ))}

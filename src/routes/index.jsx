@@ -19,6 +19,7 @@ import { ClipLoader } from "react-spinners";
 import ContactPage from "../pages/ContactPage";
 import NoteBook from "../pages/notebook";
 import Handbook from "../pages/Handbook";
+import FunctionPage from "../pages/FunctionPage";
 
 
 function NoteBookWrapper() {
@@ -56,22 +57,23 @@ function Router() {
               <Routes>
                 {/* <Route path="/" element={<MiniAppZalo />}></Route> */}
                 <Route path="/" element={<HomePage />}></Route>
-                <Route path="/Major" element={<Major />} />
+                <Route path="/nganh-dao-tao" element={<Major />} />
                 <Route path="/qrcode" element={<QRCode />} />
                 <Route path="/profile" element={<Profile />} />
                 <Route path="/notifications" element={<Notifications />} />
-                <Route path="/feedback" element={<Feedback />} />
+                <Route path="/dong-gop-y-kien" element={<Feedback />} />
                 <Route
-                  path="/RegisterForAdmission"
+                  path="/dang-ky-xet-tuyen"
                   element={<RegisterForAdmission />}
                 />
                 <Route path="/all-news/:type" element={<AllNews />} />
                 <Route path="/LookUpPoints" element={<LookUPPoints />} />
                 <Route path="/UserInfo" element={<UserInfo />} />
                 <Route path="/Business" element={<Business />} />
-                <Route path="/ContactPage" element={<ContactPage />} />
-                <Route path="/notebook" element={<NoteBookWrapper  />} />
-                <Route path="/handbook" element={<Handbook  />} />
+                <Route path="/lien-he" element={<ContactPage />} />
+                <Route path="/so-tay-sinh-vien" element={<NoteBookWrapper  />} />
+                <Route path="/cam-nang-sinh-vien" element={<Handbook  />} />
+                <Route path="/them-chuc-nang" element={<FunctionPage  />} />
               </Routes>
             </ZMPRouter>
           </SnackbarProvider>

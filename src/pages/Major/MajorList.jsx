@@ -3,7 +3,7 @@ import { useDispatch, useSelector } from "react-redux";
 import { getRegistrationForm } from "../../thunks/registrationFormThunks";
 import DetailMajorModal from "./DetailMajorModal";
 import { getAllLocation } from "../../thunks/LocationThunk";
-const MajorList = ({ majorData, onSelectMajor }) => {
+const MajorList = ({ majorData }) => {
   const [selectedLevel, setSelectedLevel] = useState(14); 
   const [selectedMajor, setSelectedMajor] = useState(null);
   const [isModalOpen, setIsModalOpen] = useState(false);

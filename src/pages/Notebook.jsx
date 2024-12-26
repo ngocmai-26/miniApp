@@ -4,11 +4,7 @@ import { useLocation, useNavigate } from "react-router-dom";
 
 import { FontAwesomeIcon } from "@fortawesome/react-fontawesome";
 import {
-  faBell,
-  faFileAlt,
   faHome,
-  faQrcode,
-  faUser,
 } from "@fortawesome/free-solid-svg-icons";
 
 function NoteBook() {
@@ -20,12 +16,12 @@ function NoteBook() {
   const src = queryParams.get("src");
   const homePath = queryParams.get("homePath");
 
+
   const goHome = () => {
-    // Nếu homePath là '/', điều hướng về trang chủ mặc định
     if (homePath === "/") {
       navigate("/"); // Quay lại trang chủ
     } else {
-      navigate(`/${homePath}`); // Điều hướng về homePath
+      navigate(`${homePath}`); // Điều hướng về homePath
     }
   };
 

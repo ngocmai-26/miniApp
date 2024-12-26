@@ -1,5 +1,4 @@
 import { createAsyncThunk } from "@reduxjs/toolkit";
-import { setAllMajors } from "../slices/MajorSlice";
 import { API, getToken } from "../constants/api";
 
 export const createMedia  = createAsyncThunk(

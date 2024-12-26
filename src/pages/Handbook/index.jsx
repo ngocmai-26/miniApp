@@ -1,38 +1,32 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { NavLink } from "react-router-dom";
 import { Page } from "zmp-ui";
 import Footer from "../../components/footer";
+import { getAllHandbook } from "../../thunks/HandbookThunk";
+import { useDispatch, useSelector } from "react-redux";
 
 
 function Handbook() {
-    const links = [
-        { name: "Ngành Kế Toán", href: "https://camnangtuyensinh.bdu.edu.vn/ketoan/index.html" },
-        { name: "Ngành Công Nghệ Thực Phẩm", href: "https://camnangtuyensinh.bdu.edu.vn/congnghethucpham/index.html" },
-        { name: "Ngành Công Nghệ Thông Tin", href: "https://camnangtuyensinh.bdu.edu.vn/congnghethongtin/index.html" },
-        { name: "Ngành Logistics và Quản Lý Chuỗi Cung Ứng", href: "https://camnangtuyensinh.bdu.edu.vn/logistics/index.html" },
-        { name: "Ngành Công Nghệ Kỹ Thuật Công Trình Xây Dựng", href: "https://camnangtuyensinh.bdu.edu.vn/xaydung/index.html" },
-        { name: "Ngành Kiến Trúc", href: "https://camnangtuyensinh.bdu.edu.vn/kientruc/index.html" },
-        { name: "Ngành Công Nghệ Kỹ Thuật Ô Tô", href: "https://camnangtuyensinh.bdu.edu.vn/congnghekythuatoto/index.html" },
-        { name: "Ngành Dược Học", href: "https://camnangtuyensinh.bdu.edu.vn/duochoc/index.html" },
-        { name: "Viện Châu Á Học", href: "https://camnangtuyensinh.bdu.edu.vn/hanquochoc-nhatbanhoc/index.html" },
-        { name: "Ngành Ngôn Ngữ Anh", href: "https://camnangtuyensinh.bdu.edu.vn/ngonnguanh/index.html" },
-        { name: "Ngành Quản Trị Kinh Doanh", href: "https://camnangtuyensinh.bdu.edu.vn/quantrikinhdoanh/index.html" },
-        { name: "Ngành Tài Chính - Ngân Hàng", href: "https://camnangtuyensinh.bdu.edu.vn/taichinhnganhang/index.html" },
-        { name: "Ngành Luật Kinh Tế", href: "https://camnangtuyensinh.bdu.edu.vn/luat/index.html" },
-    ];
+    const { allHandbook } = useSelector((state) => state.handbookReducer);
+
+
+    const dispatch = useDispatch();
+    useEffect(() => {
+      dispatch(getAllHandbook());
+    }, [dispatch]);
 
     return (
         <Page className="page">
             <div className="space-y-4 m-5 mb-16">
-                {links.map((link, index) => (
+                {allHandbook?.map((item, index) => (
                     <NavLink
                         key={index}
-                        to={`/notebook?src=${link.href}&homePath=/handbook`}
+                        to={`/so-tay-sinh-vien?src=${item.link}&homePath=/cam-nang-sinh-vien`}
                    
                         rel="noopener noreferrer"
                         className="bg-gradient-to-r from-red-600 to-pink-300 text-white rounded-lg p-4 flex justify-between items-center"
                     >
-                        ➤ {link.name}
+                        ➤ {item.name}
                     </NavLink>
                 ))}
             </div>

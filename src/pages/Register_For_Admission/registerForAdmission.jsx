@@ -9,8 +9,7 @@ import NotificationComponent from "../../components/notificationComponent";
 import { useNavigate } from "react-router-dom";
 import Footer from "../../components/footer";
 import { setStatus } from "../../slices/AdmissionRegisterSlice";
-import { createMedia } from "../../thunks/MediaThunks";
-import { getAllLocation } from "../../thunks/LocationThunk";
+import { openMediaPicker } from "zmp-sdk/apis";
 
 const RegisterForAdmission = () => {
   const dispatch = useDispatch();
@@ -236,6 +235,7 @@ const RegisterForAdmission = () => {
                     className="absolute top-1 right-1 bg-gray-300 text-white rounded-full p-1 px-2 hover:bg-red-700"
                     aria-label="Xóa"
                     style={{ transform: "translate(50%, -50%)" }}
+                    type="button"
                   >
                     x
                   </button>
@@ -248,7 +248,7 @@ const RegisterForAdmission = () => {
               </label>
               <input
                 type="file"
-                onChange={handleFileUpload}
+                onChange={pickMedia}
                 className="w-full p-2 border border-gray-300 rounded mt-2 bg-white"
                 required
               />
@@ -311,6 +311,7 @@ const RegisterForAdmission = () => {
                     className="absolute top-1 right-1 bg-gray-300 text-white rounded-full p-1 px-2 hover:bg-red-700"
                     aria-label="Xóa"
                     style={{ transform: "translate(50%, -50%)" }}
+                    type="button"
                   >
                     x
                   </button>
@@ -323,7 +324,7 @@ const RegisterForAdmission = () => {
               </label>
               <input
                 type="file"
-                onChange={handleFileUpload}
+                onChange={pickMedia}
                 className="w-full p-2 border border-gray-300 rounded mt-2 bg-white"
                 required
               />
@@ -429,6 +430,7 @@ const RegisterForAdmission = () => {
                     className="absolute top-1 right-1 bg-gray-300 text-white rounded-full p-1 px-2 hover:bg-red-700"
                     aria-label="Xóa"
                     style={{ transform: "translate(50%, -50%)" }}
+                    type="button"
                   >
                     x
                   </button>
@@ -441,7 +443,7 @@ const RegisterForAdmission = () => {
               </label>
               <input
                 type="file"
-                onChange={handleFileUpload}
+                onChange={pickMedia}
                 className="w-full p-2 border border-gray-300 rounded mt-2 bg-white"
                 required
               />
@@ -488,24 +490,64 @@ const RegisterForAdmission = () => {
 
     if (matchedLevel) {
       setSelectedAcademic(matchedLevel?.need_evaluation_method);
-    } 
-
+    }
   }, [dispatch, educationLevel]);
 
-  const handleFileUpload = (event) => {
-    const selectedFile = event.target.files[0];
+  // const handleFileUpload = (event) => {
+  //   // const selectedFile = event.target.files[0];
 
-    if (selectedFile) {
-      const formData = new FormData();
-      formData.append("file", selectedFile);
-      dispatch(createMedia(formData)).then((reps) => {
-        if (reps.payload) {
-          setFormData((prevFormData) => ({
-            ...prevFormData,
-            files: [...prevFormData.files, reps.payload.data],
-          }));
-        }
+  //   // if (selectedFile) {
+  //   //   const formData = new FormData();
+  //   //   formData.append("file", selectedFile);
+  //   //   dispatch(createMedia(formData)).then((reps) => {
+  //   //     if (reps.payload) {
+  //   //       setFormData((prevFormData) => ({
+  //   //         ...prevFormData,
+  //   //         files: [...prevFormData.files, reps.payload.data],
+  //   //       }));
+  //   //     }
+  //   //   });
+  //   // }
+
+  // };
+
+  const pickMedia = async () => {
+    try {
+      const { data } = await openMediaPicker({
+        type: "photo",
+        serverUploadUrl: "https://cds.bdu.edu.vn/apis/media",
       });
+
+      console.log("Raw data:", data);
+
+      // Kiểm tra và parse JSON
+      let parsedData;
+      try {
+        parsedData = JSON.parse(data);
+        console.log("Parsed data:", parsedData);
+      } catch (parseError) {
+        console.error("Failed to parse data:", parseError);
+        return;
+      }
+
+      // Kiểm tra phản hồi hợp lệ
+      if (parsedData.error === 0 && Array.isArray(parsedData.data?.urls)) {
+        const processedUrls = parsedData.data.urls.map(
+          (url) => new URL(url).href
+        );
+
+        // Cập nhật formData.files
+        setFormData((prevFormData) => ({
+          ...prevFormData,
+          files: [...prevFormData.files, ...processedUrls],
+        }));
+
+        console.log("Updated formData.files:", processedUrls);
+      } else {
+        console.error("Invalid response structure:", parsedData);
+      }
+    } catch (error) {
+      console.error("Error picking media:", error);
     }
   };
 
@@ -767,37 +809,38 @@ const RegisterForAdmission = () => {
                 </div>
               )}
             </>
-          ): <></>}
-        {formData.evaluation_method && selectedAcademic &&
-                formData.evaluation_method !== "competency_assessment_exam" && (
-                  <>
-                    <div className="mb-4">
-                      <label className="block text-gray-700">
-                        Khối xét tuyển:
-                        <span className="text-red-500">*</span>
-                      </label>
-                      <select
-                        name="college_exam_group"
-                        value={+formData.college_exam_group}
-                        onChange={handleChange}
-                        className="w-full p-2 border border-gray-300 rounded mt-2 bg-white"
-                        required
-                      >
-                        <option value="">Chọn khối xét tuyển</option>
-                        {allCollegeExamGroups?.map((group) => (
-                          <option key={group.id} value={group.id}>
-                            {group.name}
-                          </option>
-                        ))}
-                      </select>
-                    </div>
-                    {(formData.college_exam_group && renderResultInputs()) || (
-                      <></>
-                    )}
-                  </>
-                )}
-              {formData.evaluation_method === "competency_assessment_exam" &&
-                renderResultInputs()}
+          ) : (
+            <></>
+          )}
+          {formData.evaluation_method &&
+            selectedAcademic &&
+            formData.evaluation_method !== "competency_assessment_exam" && (
+              <>
+                <div className="mb-4">
+                  <label className="block text-gray-700">
+                    Khối xét tuyển:
+                    <span className="text-red-500">*</span>
+                  </label>
+                  <select
+                    name="college_exam_group"
+                    value={+formData.college_exam_group}
+                    onChange={handleChange}
+                    className="w-full p-2 border border-gray-300 rounded mt-2 bg-white"
+                    required
+                  >
+                    <option value="">Chọn khối xét tuyển</option>
+                    {allCollegeExamGroups?.map((group) => (
+                      <option key={group.id} value={group.id}>
+                        {group.name}
+                      </option>
+                    ))}
+                  </select>
+                </div>
+                {(formData.college_exam_group && renderResultInputs()) || <></>}
+              </>
+            )}
+          {formData.evaluation_method === "competency_assessment_exam" &&
+            renderResultInputs()}
           {location && location !== 0 && !selectedAcademic ? (
             <>
               <div className="grid grid-cols-3 gap-4">
@@ -813,6 +856,7 @@ const RegisterForAdmission = () => {
                       className="absolute top-1 right-1 bg-gray-300 text-white rounded-full p-1 px-2 hover:bg-red-700"
                       aria-label="Xóa"
                       style={{ transform: "translate(50%, -50%)" }}
+                      type="button"
                     >
                       x
                     </button>
@@ -826,7 +870,7 @@ const RegisterForAdmission = () => {
                 </label>
                 <input
                   type="file"
-                  onChange={handleFileUpload}
+                  onChange={pickMedia}
                   className="w-full p-2 border border-gray-300 rounded mt-2 bg-white"
                   required
                 />

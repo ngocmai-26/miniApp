@@ -6,6 +6,7 @@ import { setStatus } from '../slices/FeedBackSlide';
 import NotificationComponent from '../components/notificationComponent';
 import { useNavigate } from 'react-router-dom';
 
+
 const Feedback = () => {
   const dispatch = useDispatch();
   const nav = useNavigate();

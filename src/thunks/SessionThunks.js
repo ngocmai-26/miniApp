@@ -1,13 +1,13 @@
 import { createAsyncThunk } from "@reduxjs/toolkit"
-import { API, getToken, initToken} from "../constants/api"
+import { API, getToken} from "../constants/api"
 
 export const session = createAsyncThunk(
     'session',
-    async (data, { dispatch, rejectWithValue }) => {
+    async (_, { dispatch, rejectWithValue }) => {
       try {
         
         const TOKEN_APP = getToken(); 
-        const resp = await fetch(`${API.uri}/miniapp/auth/session`, {
+         await fetch(`${API.uri}/miniapp/auth/session`, {
           method: 'POST',
           headers: {
             'Content-Type': 'application/json',

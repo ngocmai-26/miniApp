@@ -1,5 +1,4 @@
 import React, { useEffect, useState } from 'react';
-import { Page } from 'zmp-ui';
 import Footer from '../components/footer';
 import { getUserInfo } from 'zmp-sdk/apis';
 
@@ -37,12 +36,12 @@ function Profile() {
       <ul className="border-t border-gray-200">
         {actions.map((action, index) => (
           <li key={index} className="border-b">
-            <a
+            {/* <a
               href={action.link}
               className="block text-md p-4 hover:bg-gray-100 text-gray-600 font-semibold"
             >
               {action.text}
-            </a>
+            </a> */}
           </li>
         ))}
       </ul>

@@ -13,6 +13,9 @@ import NotificationSlice from "../slices/NotificationSlice";
 import AlertSlice from "../slices/AlertSlice";
 import MediaSlice from "../slices/MediaSlice";  
 import LocationSlice from "../slices/LocationSlice";  
+import ConfigSlice from "../slices/ConfigSlice";  
+import HandbookSlice from "../slices/HandbookSlide";  
+import ContactSlice from "../slices/ContactSlide";  
 
 
 
@@ -32,6 +35,9 @@ export const store = configureStore({
     notificationReducer: NotificationSlice, 
     mediaReducer: MediaSlice, 
     locationReducer: LocationSlice, 
+    configReducer: ConfigSlice, 
+    handbookReducer: HandbookSlice, 
+    contactReducer: ContactSlice, 
   },
   middleware: (getDefaultMiddleware) =>
     getDefaultMiddleware({ serializableCheck: false }),

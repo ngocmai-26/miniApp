@@ -1,10 +1,9 @@
 import React, { useEffect } from "react";
 import { useDispatch, useSelector } from "react-redux";
-import { Link, NavLink } from "react-router-dom";
+import { NavLink } from "react-router-dom";
 import { getAllNews } from "../thunks/NewsThunks";
 import { followOA, getUserInfo } from "zmp-sdk/apis";
 import { Swiper, SwiperSlide } from "swiper/react";
-import moment from "moment";
 
 const MiniAppZalo = () => {
   const dispatch = useDispatch();
@@ -18,9 +17,7 @@ const MiniAppZalo = () => {
     followOA({
       id: "1098752924141594070",
       success: (res) => {
-        console.log("Follow OA thành công:", res);
         
-        // Đợi 2 giây trước khi gọi getUserInfo
         setTimeout(() => {
           getUserInfo({
             success: (data) => {
@@ -39,7 +36,6 @@ const MiniAppZalo = () => {
   };
 
   useEffect(() => {
-    // Lấy thông tin người dùng khi tải component
     getUserInfo({
       success: (data) => {
         console.log("Thông tin người dùng:", data.userInfo);
@@ -95,9 +91,9 @@ const MiniAppZalo = () => {
           </div>
           <div className="flex items-center mt-2">
             <i className="fas fa-globe text-gray-600 mr-2"></i>
-            <a href="https://www.bdu.edu.vn/" className="text-blue-500">
+            {/* <a href="https://www.bdu.edu.vn/" className="text-blue-500">
               https://www.bdu.edu.vn/
-            </a>
+            </a> */}
           </div>
           <div className="mt-2">
             <p>Tài khoản Zalo của Trường Đại học Bình Dương</p>
@@ -148,7 +144,7 @@ const MiniAppZalo = () => {
               {allNews.map((item) => (
                 <SwiperSlide key={item.id}>
                   <div>
-                    <a href={item.link}>
+                    {/* <a href={item.link}>
                       <div className="rounded-xl overflow-hidden">
                         <img
                           src={item.image}
@@ -164,7 +160,7 @@ const MiniAppZalo = () => {
                       <div className="text-right text-gray-400 text-xs">
                         Ngày: {moment(item.created_at).format("YYYY/MM/DD")}
                       </div>
-                    </a>
+                    </a> */}
                   </div>
                 </SwiperSlide>
               ))}

@@ -22,6 +22,8 @@ function AppZalo() {
           dispatch(setAlert({}));
         }
       }, [msg]);
+
+
     return ( 
         <div>
             <Router />

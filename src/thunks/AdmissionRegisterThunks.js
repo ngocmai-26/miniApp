@@ -1,9 +1,6 @@
 import { createAsyncThunk } from "@reduxjs/toolkit"
 import { API, getToken,  } from "../constants/api"
 import { setStatus } from "../slices/AdmissionRegisterSlice"
-import zmp from "zmp-framework/react"
-import { showToast } from "zmp-sdk/apis"
-import NotificationComponent from "../components/notificationComponent"
 
 
 export const admissionRegister = createAsyncThunk(

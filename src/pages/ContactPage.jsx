@@ -4,14 +4,16 @@ import { Swiper } from "zmp-ui";
 import Footer from "../components/footer";
 import { getAllLocation } from "../thunks/LocationThunk";
 import { useDispatch, useSelector } from "react-redux";
+import { openWebview } from "zmp-sdk/apis";
+import { getAllContact } from "../thunks/ContactThunk";
 
 const ContactPage = () => {
   const [selectedLocation, setSelectedLocation] = useState(""); // Thêm trạng thái cho địa điểm học
   const [selectedMajor, setSelectedMajor] = useState("");
-  const [showNotification, setShowNotification] = useState(false);
   const [showMajorNotification, setShowMajorNotification] = useState(false);
   const [phoneItem, setPhoneItem] = useState("");
   // Thông báo khi chọn ngành học mà chưa chọn địa điểm
+  const [isButtonDisabled, setIsButtonDisabled] = useState(false);
 
   const dispatch = useDispatch();
   const { allLocation } = useSelector((state) => state.locationReducer);
@@ -26,7 +28,6 @@ const ContactPage = () => {
     setSelectedLocation("");
   }, []);
 
-  // List of mission statements with title and content
   const missionStatements = [
     {
       title: "Mục tiêu",
@@ -50,73 +51,13 @@ const ContactPage = () => {
     },
   ];
 
-  // List of majors with their corresponding phone numbers and locations
-  const majors = [
-    { name: "Tất cả các ngành", phone: "0789269219", location: "Bình Dương" },
-    { name: "Nhật Bản học", phone: "0813865619", location: "Bình Dương" },
-    { name: "Hàn Quốc học", phone: "0962939816", location: "Bình Dương" },
-    { name: "Ngôn ngữ Anh", phone: "0789269219", location: "Bình Dương" },
-    { name: "Xã hội học", phone: "0789269219", location: "Bình Dương" },
-    { name: "Dược học", phone: "0962939816", location: "Bình Dương" },
-    {
-      name: "Công nghệ thực phẩm",
-      phone: "0827927468",
-      location: "Bình Dương",
-    },
-    {
-      name: "Quản trị kinh doanh",
-      phone: "0796462919",
-      location: "Bình Dương",
-    },
-    {
-      name: "Tài chính - Ngân hàng",
-      phone: "0395927468",
-      location: "Bình Dương",
-    },
-    { name: "Kế toán", phone: "0796462919", location: "Bình Dương" },
-    { name: "Luật kinh tế", phone: "0867527468", location: "Bình Dương" },
-    {
-      name: "Logistics và Quản lý chuỗi cung ứng",
-      phone: "0395927468",
-      location: "Bình Dương",
-    },
-    {
-      name: "Công nghệ kỹ thuật điện, điện tử",
-      phone: "0867527468",
-      location: "Bình Dương",
-    },
-    {
-      name: "Công nghệ kỹ thuật ô tô",
-      phone: "0813865619",
-      location: "Bình Dương",
-    },
-    {
-      name: "Công nghệ thông tin",
-      phone: "0395927468",
-      location: "Bình Dương",
-    },
-    {
-      name: "Công nghệ kỹ thuật công trình xây dựng",
-      phone: "0395927468",
-      location: "Bình Dương",
-    },
-    { name: "Kiến trúc", phone: "0382376068", location: "Bình Dương" },
-    { name: "Luật", phone: "0813865619", location: "Bình Dương" },
-    {
-      name: "Công nghệ kỹ thuật công trình xây dựng",
-      phone: "0813865619",
-      location: "Bình Dương",
-    },
-    {
-      name: "Công nghệ kỹ thuật ô tô",
-      phone: "0382376068",
-      location: "Bình Dương",
-    },
-    { name: "Nhật Bản học", phone: "0798282368", location: "Bình Dương" },
-    { name: "Hóa dược", phone: "0395927468", location: "Bình Dương" },
-    { name: "Hotline 1", phone: "0901289750", location: "Cà Mau" },
-    { name: "Hotline 2", phone: "0962939816", location: "Cà Mau" },
-  ];
+  const { allContact } = useSelector((state) => state.contactReducer);
+
+  useEffect(() => {
+    if (allContact.length <= 0) {
+      dispatch(getAllContact());
+    }
+  }, [dispatch, allLocation.length]);
 
   // Function to handle call button click
   const handleCallClick = () => {
@@ -124,9 +65,11 @@ const ContactPage = () => {
       // Xác định số điện thoại dựa vào địa điểm và ngành
       const defaultPhone =
         selectedLocation === "Bình Dương" ? "0789269219" : "0901289750";
-      const major = majors.find(
-        (m) => m.name === selectedMajor && m.location === selectedLocation
+      const major = allContact?.find(
+        (m) => m.name === selectedMajor && m.location_name === selectedLocation
       );
+
+      console.log("major", major.phone);
       const phone = major ? major.phone : defaultPhone;
 
       // Mở link chat Zalo với số điện thoại đã chọn
@@ -137,22 +80,46 @@ const ContactPage = () => {
     }
   };
 
+  const openUrlInWebview = async (phone) => {
+    try {
+      const zaloUrl = `https://zalo.me/${phone}`;
+      await openWebview({
+        url: zaloUrl,
+        config: {
+          style: "normal",
+          leftButton: "back",
+        },
+      });
+      setIsButtonDisabled(true);
+      setTimeout(() => {
+        setIsButtonDisabled(false);
+      }, 3000);
+    } catch (error) {
+      setIsButtonDisabled(false);
+    }
+  };
+
   useEffect(() => {
     const defaultPhone =
       selectedLocation === "Bình Dương" ? "0789269219" : "0901289750";
 
-    const major = majors.find(
-      (m) => m.name === selectedMajor && m.location === selectedLocation
+    const major = allContact?.find(
+      (m) => m.name === selectedMajor && m.location_name === selectedLocation
     );
+
     const phone = major ? major.phone : defaultPhone;
 
     // Mở link chat Zalo với số điện thoại đã chọn
     setPhoneItem(phone);
-  }, [selectedLocation]);
+  }, [selectedLocation, selectedMajor]);
   // Lọc ngành học dựa trên địa điểm đã chọn
-  const filteredMajors = majors.filter(
-    (major) => major.location === selectedLocation
+  const filteredMajors = allContact?.filter(
+    (major) => major.location_name === selectedLocation
   );
+
+  console.log("filteredMajors", filteredMajors);
+  console.log("allContact", allContact);
+  console.log("selectedLocation", selectedLocation);
 
   // Thay đổi ngành học, kiểm tra xem đã chọn địa điểm hay chưa
   const handleMajorChange = (e) => {
@@ -183,7 +150,7 @@ const ContactPage = () => {
               onChange={(e) => setSelectedLocation(e.target.value)}
             >
               <option value="">Chọn địa điểm học</option>
-              {allLocation.map((item) => (
+              {allLocation?.map((item) => (
                 <option key={item.id} value={item.name}>
                   {item.name}
                 </option>
@@ -201,7 +168,7 @@ const ContactPage = () => {
                   value={selectedMajor}
                   onChange={handleMajorChange} // Gọi hàm xử lý khi thay đổi ngành học
                 >
-                  {filteredMajors.map((major, key) => (
+                  {filteredMajors?.map((major, key) => (
                     <option key={key} value={major.name}>
                       {major.name}
                     </option>
@@ -214,13 +181,17 @@ const ContactPage = () => {
           {/* Button gọi điện và chat */}
           <div className="flex justify-around mt-4">
             {selectedLocation ? (
-              <a
-                href={`https://zalo.me/${phoneItem}`}
-                rel="noopener noreferrer"
-                className="w-full flex items-center justify-center bg-blue-500 text-white font-semibold px-6 py-2 rounded-3xl"
+              <button
+                onClick={() => openUrlInWebview(phoneItem)}
+                disabled={isButtonDisabled}
+                className={`w-full flex items-center justify-center ${
+                  isButtonDisabled
+                    ? "bg-gray-300 cursor-not-allowed"
+                    : "bg-blue-500"
+                } text-white font-semibold px-6 py-2 rounded-3xl`}
               >
-                Chat Ngay
-              </a>
+                {isButtonDisabled ? "Chờ 1 chút..." : "Chat Ngay"}
+              </button>
             ) : (
               <button
                 onClick={handleCallClick}
@@ -250,7 +221,6 @@ const ContactPage = () => {
           </div>
         </div>
 
-        {/* Swiper for Mission Statements */}
         <div className="w-11/12 bg-red-600 text-white rounded-lg mt-2">
           <Swiper
             spaceBetween={15}

@@ -53,7 +53,8 @@ function Footer() {
 
       <NavLink to="/notifications" className="nav-item">
         <div style={{ position: "relative" }}>
-          <FontAwesomeIcon icon={faBell} className="nav-icon" style={{ fontSize: 20 }} />
+          <FontAwesomeIcon icon=
+          {faBell} className="nav-icon" style={{ fontSize: 20 }} />
           {(
             <span
               style={{

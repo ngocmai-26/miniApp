@@ -1,1 +1,0 @@
-import{R as e}from"./vendor.7a61536b.module.js";import{F as a}from"./index.10add3df.module.js";function l(){return e.createElement("div",{className:"container"},e.createElement("main",{className:"content"},e.createElement("h1",null,"About Page"),e.createElement("p",null,"This is a simple example of a Zalo Mini App using React.")),e.createElement(a,null))}export{l as default};
